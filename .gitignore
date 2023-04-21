@@ -1,0 +1,5 @@
+/backups/
+/dist/
+/build/
+/poetry.lock
+/.venv/

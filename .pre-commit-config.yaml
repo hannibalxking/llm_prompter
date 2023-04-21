@@ -1,0 +1,33 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+-   repo: https://github.com/psf/black
+    rev: 23.11.0 # Keep Black version, but change target below
+    hooks:
+    -   id: black
+        # Fixes build-blocker #1: Target Python 3.10 syntax
+        language_version: python3.10
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.6 # Use a recent version of Ruff
+    hooks:
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1 # Use a recent version of mypy
+    hooks:
+    -   id: mypy
+        # Ensure dependencies needed by mypy are listed
+        additional_dependencies: [
+            "pydantic>=2.0", # Pydantic v2 needed for newer mypy checks
+            "types-PySide6",
+            "pytest",
+            "pytest-qt",
+            "typer",
+            "loguru",
+        ]
+        args: [--config-file=pyproject.toml] # Point mypy to the config in pyproject.toml

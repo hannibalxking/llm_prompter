@@ -1,0 +1,82 @@
+[tool.poetry]
+name = "promptbuilder"
+version = "0.2.0-rc1" # Updated version for RC
+description = "A slick prompt-crafting workbench for developers (Windows Focus)"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "promptbuilder"}]
+
+[tool.poetry.dependencies]
+# Requires Python 3.10+
+python  = ">=3.10,<3.14"      # 3.14 is the newest PySide6 claims to support
+PySide6 = "^6.8.1"            # first LTS that builds with Qt6.8, optional but tidier
+pydantic = "^2.5.0"
+tiktoken = "^0.9"
+typer = {version = "^0.9.0", optional = true} # For CLI
+loguru = "^0.7.2"
+networkx = "^3.4.2"
+patch = "==1.*"
+unidiff = "^0.7.5"
+patch-ng = "^1.18.1"
+google-generativeai = "^0.8.5"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-qt = "^4.2.0"
+black = "^23.11.0"
+ruff = "^0.1.6"
+mypy = "^1.7.0"
+pre-commit = "^3.5.0"
+# PySide already bundles basic stubs; add only if you need the full set
+PySide6-stubs = { version = "^6.6.0", optional = true }
+pyinstaller = "^6.13.0"
+
+[tool.poetry.extras]
+cli = ["typer"]
+
+# Fixes Blocker B-3: Add script entry point for CLI
+[tool.poetry.scripts]
+promptbuilder-cli = "promptbuilder.cli:app"
+
+# Example for plugin entry points (if using pkg_resources/importlib.metadata)
+# [tool.poetry.plugins."promptbuilder.context_providers"]
+# "git_diff" = "promptbuilder.plugins.git_diff:GitDiffProvider"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# --- Tool Configurations ---
+
+[tool.black]
+line-length = 88
+# Target version set in pre-commit config
+
+[tool.ruff]
+line-length = 88
+select = [
+    "E", "W", "F", "I", "N", "ANN", "PLR", "S",
+]
+ignore = [
+    "ANN101", "ANN102", "ANN002", "ANN003", "ANN201", "ANN401",
+    "S101", "N802", "N803", "N806", "N815",
+    "PLR0913", "PLR0915", "PLR2004",
+]
+fixable = ["ALL"]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]
+"promptbuilder/ui/*" = ["N802", "N803", "N806", "PLR0913"]
+"promptbuilder/services/*task.py" = ["N802", "PLR0913"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["PySide6.*", "tiktoken", "loguru", "typer", "pytest.*"]
+ignore_missing_imports = true
